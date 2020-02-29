@@ -3,7 +3,7 @@ import time
 import json
 import datetime
 import Cargo
-import EmonHubSerialInterfacer as ehi
+from . import EmonHubSerialInterfacer as ehi
 
 """class EmonHubJeeInterfacer
 
@@ -29,12 +29,14 @@ class EmonHubJeeInterfacer(ehi.EmonHubSerialInterfacer):
         # Display device firmware version and current settings
         self.info = ["",""]
         if self._ser is not None:
-            self._ser.write("v")
+            self._ser.write(str.encode("v"))
             time.sleep(2)
-            self._rx_buf = self._rx_buf + self._ser.readline()
+            self._log.debug("About read buffer")
+            self._rx_buf = self._rx_buf + self._ser.readline().decode("utf-8")
+            self._log.debug("After read buffer")
             if '\r\n' in self._rx_buf:
                 self._rx_buf=""
-                info = self._rx_buf + self._ser.readline()[:-2]
+                info = self._rx_buf + self._ser.readline().decode("utf-8")[:-2]
                 if info != "":
                     # Split the returned "info" string into firmware version & current settings
                     self.info[0] = info.strip().split(' ')[0]
@@ -78,8 +80,8 @@ class EmonHubJeeInterfacer(ehi.EmonHubSerialInterfacer):
         """
 
 	#just send it
-	txc = self._process_tx(cargo)
-	self.send(txc)
+        txc = self._process_tx(cargo)
+        self.send(txc)
 
 
 
@@ -92,7 +94,7 @@ class EmonHubJeeInterfacer(ehi.EmonHubSerialInterfacer):
         """
 
         # Read serial RX
-        self._rx_buf = self._rx_buf + self._ser.readline()
+        self._rx_buf = self._rx_buf + self._ser.readline().decode("utf-8")
 
         # If line incomplete, exit
         if '\r\n' not in self._rx_buf:
@@ -172,7 +174,7 @@ class EmonHubJeeInterfacer(ehi.EmonHubSerialInterfacer):
         
         """
 
-        for key, setting in self._jee_settings.iteritems():
+        for key, setting in iter(self._jee_settings.items()):
             # Decide which setting value to use
             if key in kwargs.keys():
                 setting = kwargs[key]
@@ -206,7 +208,7 @@ class EmonHubJeeInterfacer(ehi.EmonHubSerialInterfacer):
                 continue
             self._settings[key] = setting
             self._log.info("Setting " + self.name + " %s: %s" % (key, setting) + " (" + command + ")")
-            self._ser.write(command)
+            self._ser.write(command.encode())
             # Wait a sec between two settings
             time.sleep(1)
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 
@@ -87,7 +87,7 @@ class EmonHub(object):
 
         # Initialise thread restart counters
         restart_count={}
-        for I in self._interfacers.itervalues():
+        for I in iter(self._interfacers.values()):
             restart_count[I.name]=0
 
         # Until asked to stop
@@ -100,7 +100,7 @@ class EmonHub(object):
 
             # For all Interfacers
             kill_list=[]
-            for I in self._interfacers.itervalues():
+            for I in iter(self._interfacers.values()):
                 # Check threads are still running
                 if not I.isAlive():
                     kill_list.append(I.name) # <-avoid modification of iterable within loop
@@ -115,7 +115,7 @@ class EmonHub(object):
                             cargo = I._pub_channels[pub_channel].pop(0)
                             
                             # Post to each subscriber interface
-                            for sub_interfacer in self._interfacers.itervalues():
+                            for sub_interfacer in iter(self._interfacers.values()):
                                 # For each subsciber channel
                                 for sub_channel in sub_interfacer._settings['subchannels']:
                                     # If channel names match
@@ -148,7 +148,7 @@ class EmonHub(object):
 
         self._log.info("Exiting hub...")
 
-        for I in self._interfacers.itervalues():
+        for I in iter(self._interfacers.values()):
             I.stop = True
             I.join()
 
@@ -199,7 +199,7 @@ class EmonHub(object):
             self._interfacers[name].stop = True
             del(self._interfacers[name])
 
-        for name, I in settings['interfacers'].iteritems():
+        for name, I in iter(settings['interfacers'].items()):
             # If interfacer does not exist, create it
             if name not in self._interfacers:
                 try:

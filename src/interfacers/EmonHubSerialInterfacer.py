@@ -66,7 +66,7 @@ class EmonHubSerialInterfacer(EmonHubInterfacer):
         if not self._ser: return False
 
         # Read serial RX
-        self._rx_buf = self._rx_buf + self._ser.readline()
+        self._rx_buf = self._rx_buf + self._ser.readline().decode("utf-8")
         
         # If line incomplete, exit
         if '\r\n' not in self._rx_buf:

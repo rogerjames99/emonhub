@@ -2,7 +2,7 @@ import serial
 import time
 import Cargo
 import re
-import EmonHubSerialInterfacer as ehi
+from . import EmonHubSerialInterfacer as ehi
 
 """class EmonHubTx3eInterfacer
 
@@ -44,7 +44,7 @@ class EmonHubTx3eInterfacer(ehi.EmonHubSerialInterfacer):
         if not self._ser: return False
             
         # Read serial RX
-        self._rx_buf = self._rx_buf + self._ser.readline()
+        self._rx_buf = self._rx_buf + self._ser.readline().decode("utf-8")
         
         # If line incomplete, exit
         if '\r\n' not in self._rx_buf:
@@ -95,7 +95,7 @@ class EmonHubTx3eInterfacer(ehi.EmonHubSerialInterfacer):
         return c
         
     def set(self, **kwargs):
-        for key,setting in self._settings.iteritems():
+        for key,setting in iter(self._settings.items()):
             if key in kwargs.keys():
                 # replace default
                 # self._log.debug(kwargs[key])

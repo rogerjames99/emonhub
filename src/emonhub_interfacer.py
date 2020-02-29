@@ -14,7 +14,7 @@ import logging
 import socket
 import select
 import threading
-import urllib2
+import urllib3
 import json
 import uuid
 import traceback
@@ -603,7 +603,7 @@ class EmonHubInterfacer(threading.Thread):
         """
     #def setall(self, **kwargs):
 
-        for key, setting in self._defaults.iteritems():
+        for key, setting in iter(self._defaults.items()):
             if key in kwargs.keys():
                 setting = kwargs[key]
             else:

@@ -101,7 +101,7 @@ class EmonHubEmoncmsHTTPInterfacer(EmonHubInterfacer):
 
         super (EmonHubEmoncmsHTTPInterfacer, self).set(**kwargs)
 
-        for key, setting in self._cms_settings.iteritems():
+        for key, setting in iter(self._cms_settings.items()):
             #valid = False
             if not key in kwargs.keys():
                 setting = self._cms_settings[key]

@@ -3,9 +3,9 @@
 
 from collections import namedtuple
 import time
-from __builtin__ import long
-from SMABluetoothPacket import SMABluetoothPacket
-from SMANET2PlusPacket import SMANET2PlusPacket
+#from __builtin__ import long
+from .SMABluetoothPacket import SMABluetoothPacket
+from .SMANET2PlusPacket import SMANET2PlusPacket
 from datetime import datetime
 
 __author__ = 'Stuart Pittaway'

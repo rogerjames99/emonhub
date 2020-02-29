@@ -118,7 +118,7 @@ class EmonHubPacketGenInterfacer(EmonHubInterfacer):
 
         """
 
-        for key, setting in self._pg_settings.iteritems():
+        for key, setting in iter(self._pg_settings.items()):
             # Decide which setting value to use
             if key in kwargs.keys():
                 setting = kwargs[key]

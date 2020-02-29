@@ -42,6 +42,7 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
         self._connected = False          
                   
         self._mqttc = mqtt.Client()
+        self._mqttc.enable_logger(self._log)
         self._mqttc.on_connect = self.on_connect
         self._mqttc.on_disconnect = self.on_disconnect
         self._mqttc.on_message = self.on_message
@@ -93,9 +94,9 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
             self._log.info("Connecting to MQTT Server")
             try:
                 self._mqttc.username_pw_set(self.init_settings['mqtt_user'], self.init_settings['mqtt_passwd'])
-                self._mqttc.connect(self.init_settings['mqtt_host'], self.init_settings['mqtt_port'], 60)
-            except:
-                self._log.info("Could not connect...")
+                self._mqttc.connect(self.init_settings['mqtt_host'], int(self.init_settings['mqtt_port']), 60)
+            except Exception as e:
+                self._log.info("Could not connect..." + str(e))
                 time.sleep(1.0)
             
         else:
@@ -179,7 +180,6 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
             self.flush()
         
     def on_connect(self, client, userdata, flags, rc):
-        
         connack_string = {0:'Connection successful',
                           1:'Connection refused - incorrect protocol version',
                           2:'Connection refused - invalid client identifier',
@@ -243,7 +243,7 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
         
         super (EmonHubMqttInterfacer, self).set(**kwargs)
 
-        for key, setting in self._mqtt_settings.iteritems():
+        for key, setting in iter(self._mqtt_settings.items()):
             #valid = False
             if not key in kwargs.keys():
                 setting = self._mqtt_settings[key]

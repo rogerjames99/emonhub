@@ -133,7 +133,7 @@ class EmonHubSocketInterfacer(EmonHubInterfacer):
 
         """
 
-        for key, setting in self._skt_settings.iteritems():
+        for key, setting in iter(self._skt_settings.items()):
             # Decide which setting value to use
             if key in kwargs.keys():
                 setting = kwargs[key]
